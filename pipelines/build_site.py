@@ -242,6 +242,8 @@ _HTML_TEMPLATE = r"""<!doctype html>
   </div>
 
   <footer>
+    Maintained by the OCHA Centre for Humanitarian Data (CHD) &middot;
+    <a href="https://github.com/OCHA-DAP/ds-acled-trends" rel="noopener">source on GitHub</a><br>
     Data &copy; <a href="https://acleddata.com" rel="noopener">ACLED</a>, sourced from the
     <a href="https://acleddata.com/platform/trends" rel="noopener">Trends platform</a>.
     Subject to ACLED's terms of use and attribution policy.
