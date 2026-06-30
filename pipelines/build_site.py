@@ -35,6 +35,12 @@ PBKDF2_ITERATIONS = 200_000
 DOCS_DIR = Path("docs")
 DATA_DIR = DOCS_DIR / "data"
 
+# Fixed (non-secret) PBKDF2 salt. Keeping it stable across rebuilds means a
+# browser's cached index.html always matches the freshly re-encrypted files —
+# decryption only needs salt + password, and each file carries its own random
+# IV. A per-site constant salt still defeats cross-site precomputation.
+SALT = base64.b64decode("84WlFDHXSJrWqlF6BnMTRQ==")
+
 
 def _derive_key(password: str, salt: bytes) -> bytes:
     kdf = PBKDF2HMAC(
@@ -105,7 +111,7 @@ def main() -> None:
         raise SystemExit("SITE_PASSWORD is not set — refusing to build site.")
 
     DATA_DIR.mkdir(parents=True, exist_ok=True)
-    salt = os.urandom(16)
+    salt = SALT
     key = _derive_key(password, salt)
 
     entries = _collect_csvs()
