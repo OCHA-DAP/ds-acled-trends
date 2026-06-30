@@ -4,3 +4,6 @@ __pycache__/
 .env
 *.parquet
 .DS_Store
+
+# Built Pages site (generated in CI, deployed as an artifact — not committed)
+docs/

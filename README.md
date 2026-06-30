@@ -20,11 +20,30 @@ https://trendfinder-api.acledapps.com/api/v1/overview?outcome=organized_violence
   `6` = 6 Months, `12` = Year (the app default).
 
 The pipeline fetches the **measured** period (`lead=0`) for organized violence,
-parses `displayData.countries` into one row per country, and uploads two CSV
-files to blob storage:
+parses `displayData.countries` into one row per country, and uploads CSV files
+to blob storage:
 
-- `ds-acled-trends/processed/acled/trends_organized_violence_<period_end>.csv`
-- `ds-acled-trends/processed/acled/trends_organized_violence_latest.csv`
+- `ds-acled-trends/processed/acled/trends_organized_violence_<period_end>.csv` — one per measured period
+- `ds-acled-trends/processed/acled/trends_organized_violence_latest.csv` — the most recent period
+- `ds-acled-trends/processed/acled/trends_organized_violence_all.csv` — **cumulative**, rebuilt each run from every per-date file (deduplicated to one row per country per period)
+
+Blob is the canonical store; the `all` file is reconstructed from the per-date
+files each run, so it self-heals.
+
+## Download site (GitHub Pages)
+
+The workflow also publishes a password-protected download page to GitHub Pages
+([docs/](docs)), where the `all`, `latest`, and every per-date CSV can be
+downloaded.
+
+The protection is real on static hosting: each CSV is encrypted at build time
+(PBKDF2-SHA256 → AES-256-GCM) with the `SITE_PASSWORD` secret, and decrypted
+**in the browser** after the visitor enters the password. Only ciphertext
+(`*.csv.enc`) is ever published — the raw CSVs are never exposed by URL. Share
+the password with intended users out-of-band.
+
+To change the password, update the `SITE_PASSWORD` repo secret and re-run the
+workflow (it re-encrypts everything).
 
 ### Output columns
 
@@ -54,8 +73,14 @@ uv run python pipelines/run_scrape.py
 
 Runs every Monday at 10:00 UTC via GitHub Actions, or can be triggered manually.
 
+> Building the site locally also requires `SITE_PASSWORD` and writes to `docs/`:
+> ```bash
+> DSCI_AZ_BLOB_DEV_SAS_WRITE=... SITE_PASSWORD=... uv run python pipelines/build_site.py
+> ```
+
 ## Secrets
 
 | Secret | Description |
 |---|---|
-| `DSCI_AZ_BLOB_DEV_SAS_WRITE` | Azure blob write SAS token |
+| `DSCI_AZ_BLOB_DEV_SAS_WRITE` | Azure blob write SAS token (also used to read/list when rebuilding `all`) |
+| `SITE_PASSWORD` | Password used to encrypt the download-site CSVs |
