@@ -184,7 +184,12 @@ _HTML_TEMPLATE = r"""<!doctype html>
     background: #fff; border: 1px solid var(--line); border-radius: 12px;
     padding: 22px; margin: 0 auto 22px;
   }
-  .lock h2 { margin: 0 0 4px; font-size: 1.1rem; }
+  .lock h2, .notes h2 { margin: 0 0 4px; font-size: 1.1rem; }
+  .notes h2 { margin-bottom: 12px; }
+  .notes ul { margin: 0; padding-left: 20px; }
+  .notes li { margin-bottom: 9px; font-size: .9rem; color: #333b49; }
+  .notes li:last-child { margin-bottom: 0; }
+  .notes strong { color: var(--ink); }
   .lock p { margin: 0 0 16px; color: var(--muted); font-size: .9rem; }
   .row { display: flex; gap: 10px; flex-wrap: wrap; }
   input[type=password] {
@@ -245,6 +250,18 @@ _HTML_TEMPLATE = r"""<!doctype html>
       <thead><tr><th>File</th><th class="num">Rows</th><th class="num">Size</th><th class="num"></th></tr></thead>
       <tbody id="rows"></tbody>
     </table>
+  </div>
+
+  <div class="card notes">
+    <h2>About this data</h2>
+    <ul>
+      <li><strong>Source.</strong> ACLED <a href="https://acleddata.com/platform/trends" rel="noopener">Trends</a> platform &mdash; <em>organized violence</em> (battles, explosions/remote violence, and violence against civilians; excludes protests, riots and other demonstrations), counted by country.</li>
+      <li><strong>Measured, not forecast.</strong> Each period is a 4-week window of observed (coded) events. Figures for recent periods may be revised as coding continues; the <code>latest_update</code> column is ACLED's most recent data refresh.</li>
+      <li><strong>Rolling windows &mdash; don't sum across periods.</strong> The 4-week window advances about one week per report, so consecutive periods <strong>overlap by up to 3 weeks</strong>. Treat each <code>period_end</code> as its own snapshot; adding <code>event_count</code> across periods would double-count shared events.</li>
+      <li><strong>Change columns.</strong> <code>change_pct</code> and <code>change_abs</code> compare the period against the average of the comparison baseline (<code>Year</code> = average of the prior 12 months). <code>change_pct</code> is a fraction: <code>0.16</code> = +16%.</li>
+      <li><strong>Coverage.</strong> All countries and territories are included, including those with zero events.</li>
+      <li><strong>Updates.</strong> Scraped daily; ACLED typically publishes a new report mid-week. The cumulative <code>all</code> file is one row per country per measured period.</li>
+    </ul>
   </div>
 
   <footer>
