@@ -2,7 +2,9 @@ name: Weekly ACLED Trends scrape & publish
 
 on:
   schedule:
-    - cron: '0 10 * * 1'  # Every Monday 10:00 UTC
+    # Daily 10:00 UTC. ACLED refreshes the measured 4-week window mid-week
+    # (~Wednesday); running daily captures each new report within a day.
+    - cron: '0 10 * * *'
   workflow_dispatch:
 
 permissions:

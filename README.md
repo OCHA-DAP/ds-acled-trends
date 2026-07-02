@@ -71,7 +71,10 @@ DSCI_AZ_BLOB_DEV_SAS_WRITE=... \
 uv run python pipelines/run_scrape.py
 ```
 
-Runs every Monday at 10:00 UTC via GitHub Actions, or can be triggered manually.
+Runs daily at 10:00 UTC via GitHub Actions, or can be triggered manually. ACLED
+refreshes the measured 4-week window mid-week (~Wednesday); the window rolls
+forward one week each refresh, so running daily captures each new report within
+a day of publication.
 
 > Building the site locally also requires `SITE_PASSWORD` and writes to `docs/`:
 > ```bash
